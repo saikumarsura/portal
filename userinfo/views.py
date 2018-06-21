@@ -30,3 +30,10 @@ def registration(request):
 			return render(request, "login/login.html",data)
 	else:
 		return render(request, "userinfo/registration.html",{})
+
+def profile(request):	
+	email = request.session['email']
+	users_data = Usersdata.objects.filter(email=email)
+
+	return render(request, "userinfo/profile.html", {"profile":users_data})
+		

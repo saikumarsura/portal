@@ -13,7 +13,6 @@ from login.models import Userssession
 from django.db.models import F
 from django.utils import timezone
 def login(request):
-	# path = request.get_full_path()
 	if request.method == 'POST':
 		email= (request.POST.get('email')).strip()
 		password = hashlib.md5((request.POST.get('password')).strip()).hexdigest()
@@ -22,8 +21,6 @@ def login(request):
 		if check.exists() == True:
 			max_attempts_check = check.values('attempts','attempts_datetime')
 			if max_attempts_check[0]['attempts'] == 3:
-				print datetime.now()
-				print max_attempts_check[0]['attempts_datetime']
 				now_aware = timezone.now()
 
 				time_check = now_aware-max_attempts_check[0]['attempts_datetime']
@@ -42,7 +39,6 @@ def login(request):
 				elif get_attempts[0]['attempts'] == 3:
 					data={'message':"Please try after 5 min."}	
 				else:
-					print 'in sum'
 					data={'message':"Please enter valid credentials."}
 					reporter = Usersdata.objects.get(email=email)
 					reporter.attempts = F('attempts') + 1
@@ -52,7 +48,6 @@ def login(request):
 		check = Usersdata.objects.filter(email=email,password=password)
 		if check.exists() == True:
 			user_info = check.values()[0]
-			print 'userinfo',user_info
 			request.session['email'] = user_info['email']
 			request.session['user_name'] =user_info['user_name']
 			if not request.session.session_key:
@@ -64,7 +59,7 @@ def login(request):
 			else:
 				Userssession.objects.create(sessionkey=sessionkey,user_id = user_info['id'])
 			Usersdata.objects.filter(email=email).update(attempts=None,attempts_datetime=None)
-			
+			return HttpResponseRedirect("/user/profile/")
 		else:
 			data={'message':"Please enter valid credentials."}
 			return render(request, "login/login.html",data)

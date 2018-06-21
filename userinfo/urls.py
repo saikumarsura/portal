@@ -20,4 +20,5 @@ from views import *
 
 urlpatterns = [
     url(r'^registration/$', 'userinfo.views.registration'),
+    url(r'^profile/$', 'userinfo.views.profile'),
 ]
