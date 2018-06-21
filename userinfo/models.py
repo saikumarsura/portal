@@ -14,6 +14,8 @@ class Usersdata(models.Model):
 	password = models.CharField(max_length=40)
 	created_datetime = models.DateTimeField()
 	location = models.CharField(max_length=40)
+	attempts = models.IntegerField() 
+	attempts_datetime = models.DateTimeField()
 	class Meta:
 		managed = False
 		db_table = 'users_data'
